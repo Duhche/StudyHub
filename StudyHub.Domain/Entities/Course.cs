@@ -14,7 +14,7 @@ namespace StudyHub.Domain.Entities
 
         public ICollection<Module> Modules { get; set; } = new List<Module>();
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-        public ICollection<Assigment> Assigments { get; set; } = new List<Assigment>();
+        public ICollection<Assignment> Assigments { get; set; } = new List<Assignment>();
         public ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
     }
 }

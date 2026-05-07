@@ -14,7 +14,7 @@ namespace StudyHub.Domain.Entities
         public int? Grade { get; set; }
 
         public Guid AssigmentId { get; set; }
-        public Assigment Assigment { get; set; } = null!;
+        public Assignment Assigment { get; set; } = null!;
 
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyHub.Domain.Entities
 {
-    public class Assigment
+    public class Assignment
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = null!;
