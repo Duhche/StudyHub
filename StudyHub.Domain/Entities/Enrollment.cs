@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StudyHub.Domain.Entities
+namespace StudyHub.Domain.Entities;
+
+public class Enrollment
 {
-    public class Enrollment
-    {
-        public Guid UserId { get; set; }
-        public User User { get; set; } = null!;
+   
+    public Guid Id { get; set; }
 
-        public Guid CourseId { get; set; }
-        public Course Course { get; set; } = null!;
-    }
+    public Guid UserId { get; set; }
+
+    public User User { get; set; } = null!;
+
+    public Guid CourseId { get; set; }
+
+    public Course Course { get; set; } = null!;
+
+    public DateTime EnrolledAt { get; set; }
 }

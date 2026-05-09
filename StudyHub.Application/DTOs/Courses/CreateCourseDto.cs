@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StudyHub.Application.DTOs.Courses
+{
+    public class CreateCourseDto
+    {
+        public string Title { get; set; } = null!;
+    }
+}

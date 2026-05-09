@@ -30,7 +30,8 @@ namespace StudyHub.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,12 +102,14 @@ namespace StudyHub.Infrastructure.Migrations
                 name: "Enrollments",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EnrolledAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enrollments", x => new { x.UserId, x.CourseId });
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Enrollments_Courses_CourseId",
                         column: x => x.CourseId,
@@ -130,7 +133,8 @@ namespace StudyHub.Infrastructure.Migrations
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Grade = table.Column<int>(type: "int", nullable: true),
                     AssigmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -147,6 +151,11 @@ namespace StudyHub.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +194,12 @@ namespace StudyHub.Infrastructure.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_UserId_CourseId",
+                table: "Enrollments",
+                columns: new[] { "UserId", "CourseId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lessons_ModuleId",
                 table: "Lessons",
                 column: "ModuleId");
@@ -203,6 +218,11 @@ namespace StudyHub.Infrastructure.Migrations
                 name: "IX_Submissions_UserId",
                 table: "Submissions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_UserId1",
+                table: "Submissions",
+                column: "UserId1");
         }
 
         /// <inheritdoc />

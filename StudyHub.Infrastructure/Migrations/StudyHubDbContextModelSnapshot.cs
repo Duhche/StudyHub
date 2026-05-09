@@ -88,15 +88,25 @@ namespace StudyHub.Infrastructure.Migrations
 
             modelBuilder.Entity("StudyHub.Domain.Entities.Enrollment", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId", "CourseId");
+                    b.Property<DateTime>("EnrolledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId", "CourseId")
+                        .IsUnique();
 
                     b.ToTable("Enrollments");
                 });
@@ -170,11 +180,16 @@ namespace StudyHub.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssigmentId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Submissions");
                 });
@@ -186,6 +201,10 @@ namespace StudyHub.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -275,6 +294,10 @@ namespace StudyHub.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("StudyHub.Domain.Entities.User", null)
+                        .WithMany("Submissions")
+                        .HasForeignKey("UserId1");
+
                     b.Navigation("Assigment");
 
                     b.Navigation("User");
@@ -304,6 +327,8 @@ namespace StudyHub.Infrastructure.Migrations
             modelBuilder.Entity("StudyHub.Domain.Entities.User", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Submissions");
                 });
 #pragma warning restore 612, 618
         }

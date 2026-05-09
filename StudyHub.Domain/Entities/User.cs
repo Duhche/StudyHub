@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace StudyHub.Domain.Entities;
 
-namespace StudyHub.Domain.Entities
+public class User
 {
-    public class User
-    {
-        public Guid Id { get; set; }
-        public string UserName { get; set; } = null!;
-        public string Email { get; set; } = null!;
+    public Guid Id { get; set; }
 
-        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-    }
+    public string UserName { get; set; } = string.Empty;
+
+    public string Email { get; set; } = string.Empty;
+
+    public string Role { get; set; } = string.Empty;
+
+    public ICollection<Enrollment> Enrollments { get; set; }
+        = new List<Enrollment>();
+
+    public ICollection<Submission> Submissions { get; set; }
+        = new List<Submission>();
 }

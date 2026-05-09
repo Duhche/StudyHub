@@ -29,7 +29,8 @@ namespace StudyHub.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Enrollment>()
-                .HasKey(e => new { e.UserId, e.CourseId });
+     .HasIndex(e => new { e.UserId, e.CourseId })
+     .IsUnique();
 
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.User)
