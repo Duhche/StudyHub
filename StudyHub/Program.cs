@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using StudyHub;
 using StudyHub.Application.Interfaces;
 using StudyHub.Application.Services;
+using StudyHub.GraphQL;
+using StudyHub.Hubs;
 using StudyHub.Infrastructure.Data;
 using StudyHub.Infrastructure.Seed;
 
@@ -8,9 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddScoped<
+    INotificationService,
+    SignalRNotificationService>();
+
 builder.Services.AddSwaggerGen();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>();
 
 builder.Services.AddDbContext<StudyHubDbContext>(options =>
     options.UseSqlServer(
@@ -39,5 +53,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGraphQL();
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.Run();

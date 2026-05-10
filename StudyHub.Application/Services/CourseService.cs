@@ -9,15 +9,21 @@ using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
 using StudyHub.Infrastructure.Data;
 
+
 namespace StudyHub.Application.Services
 {
     public class CourseService : ICourseService
     {
         private readonly StudyHubDbContext _context;
 
-        public CourseService(StudyHubDbContext context)
+        private readonly INotificationService _notifications;
+
+        public CourseService(
+    StudyHubDbContext context,
+    INotificationService notifications)
         {
             _context = context;
+            _notifications = notifications;
         }
 
         public async Task<IEnumerable<CourseDto>> GetAllAsync()
@@ -112,6 +118,10 @@ namespace StudyHub.Application.Services
             course.IsPublished = true;
 
             await _context.SaveChangesAsync();
+
+            await _notifications.CoursePublished(
+       course.Id,
+       course.Title);
         }
 
         public async Task ArchiveAsync(Guid id)
@@ -166,6 +176,10 @@ namespace StudyHub.Application.Services
             _context.Enrollments.Add(enrollment);
 
             await _context.SaveChangesAsync();
+
+            await _notifications.UserEnrolled(
+    userId,
+    courseId);
         }
     }
 }

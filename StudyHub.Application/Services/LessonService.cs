@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StudyHub.Application.DTOs.Lessons;
+using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
 using StudyHub.Infrastructure.Data;
 
@@ -12,6 +13,8 @@ namespace StudyHub.Application.Services
     public class LessonService
     {
         private readonly StudyHubDbContext _context;
+
+        private readonly INotificationService _notifications;
 
         public LessonService(StudyHubDbContext context)
         {

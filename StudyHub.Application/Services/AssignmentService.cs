@@ -1,48 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StudyHub.Application.DTOs.Assigments;
+﻿using StudyHub.Application.DTOs.Assigments;
+using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
 using StudyHub.Infrastructure.Data;
 
-namespace StudyHub.Application.Services
+public class AssignmentService
 {
-    public class AssignmentService
+    private readonly StudyHubDbContext _context;
+    private readonly INotificationService _notifications;
+
+    public AssignmentService(
+        StudyHubDbContext context,
+        INotificationService notifications)
     {
-        private readonly StudyHubDbContext _context;
+        _context = context;
+        _notifications = notifications;
+    }
 
-        public AssignmentService(StudyHubDbContext context)
+    public async Task<Guid> CreateAsync(CreateAssignmentDto dto)
+    {
+        var course = await _context.Courses.FindAsync(dto.CourseId);
+
+        if (course == null)
+            throw new Exception("Course not found");
+
+        if (!course.IsPublished)
+            throw new Exception("Cannot add assignment to unpublished course");
+
+        if (dto.Deadline < DateTime.UtcNow)
+            throw new Exception("Deadline cannot be in the past");
+
+        var assignment = new Assignment
         {
-            _context = context;
-        }
+            Id = Guid.NewGuid(),
+            Title = dto.Title,
+            DeadLine = dto.Deadline,
+            CourseId = dto.CourseId
+        };
 
-        public async Task<Guid> CreateAsync(CreateAssignmentDto dto)
-        {
-            var course = await _context.Courses.FindAsync(dto.CourseId);
+        _context.Assignments.Add(assignment);
+        await _context.SaveChangesAsync();
 
-            if (course == null)
-                throw new Exception("Course not found");
+        
+        await _notifications.AssignmentCreated(
+            assignment.Id,
+            assignment.Title);
 
-            if (!course.IsPublished)
-                throw new Exception("Cannot add assignment to unpublished course");
-
-            if (dto.Deadline < DateTime.UtcNow)
-                throw new Exception("Deadline cannot be in the past");
-
-            var assignment = new Assignment
-            {
-                Id = Guid.NewGuid(),
-                Title = dto.Title,
-                DeadLine = dto.Deadline,
-                CourseId = dto.CourseId
-            };
-
-            _context.Assignments.Add(assignment);
-            await _context.SaveChangesAsync();
-
-            return assignment.Id;
-        }
+        return assignment.Id;
     }
 }
