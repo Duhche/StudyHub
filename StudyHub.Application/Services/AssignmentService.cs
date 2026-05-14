@@ -1,4 +1,5 @@
-﻿using StudyHub.Application.DTOs.Assigments;
+﻿using Microsoft.EntityFrameworkCore;
+using StudyHub.Application.DTOs.Assigments;
 using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
 using StudyHub.Infrastructure.Data;
@@ -46,5 +47,37 @@ public class AssignmentService
             assignment.Title);
 
         return assignment.Id;
+    }
+    public async Task UpdateAsync(Guid id, CreateAssignmentDto dto)
+    {
+        var assignment = await _context.Assignments.FindAsync(id);
+
+        if (assignment == null)
+            throw new Exception("Assignment not found");
+
+        if (dto.Deadline < DateTime.UtcNow)
+            throw new Exception("Deadline cannot be in the past");
+
+        assignment.Title = dto.Title;
+        assignment.DeadLine = dto.Deadline;
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task DeleteAsync(Guid id)
+    {
+        var assignment = await _context.Assignments.FindAsync(id);
+
+        if (assignment == null)
+            throw new Exception("Assignment not found");
+
+        _context.Assignments.Remove(assignment);
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task<IEnumerable<Assignment>> GetByCourseAsync(Guid courseId)
+    {
+        return await _context.Assignments
+            .Where(a => a.CourseId == courseId)
+            .ToListAsync();
     }
 }

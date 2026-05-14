@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using StudyHub.Application.DTOs.Lessons;
 using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
@@ -39,6 +40,35 @@ namespace StudyHub.Application.Services
             await _context.SaveChangesAsync();
 
             return lesson.Id;
+        }
+        public async Task UpdateAsync(Guid id, CreateLessonDto dto)
+        {
+            var lesson = await _context.Lessons.FindAsync(id);
+
+            if (lesson == null)
+                throw new Exception("Lesson not found");
+
+            lesson.Title = dto.Title;
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(Guid id)
+        {
+            var lesson = await _context.Lessons.FindAsync(id);
+
+            if (lesson == null)
+                throw new Exception("Lesson not found");
+
+            _context.Lessons.Remove(lesson);
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Lesson>> GetByModuleAsync(Guid moduleId)
+        {
+            return await _context.Lessons
+                .Where(l => l.ModuleId == moduleId)
+                .OrderBy(l => l.Order)
+                .ToListAsync();
         }
     }
 }

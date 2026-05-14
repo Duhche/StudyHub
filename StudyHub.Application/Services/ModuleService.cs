@@ -1,4 +1,5 @@
-﻿using StudyHub.Application.DTOs.Modules;
+﻿using Microsoft.EntityFrameworkCore;
+using StudyHub.Application.DTOs.Modules;
 using StudyHub.Application.Interfaces;
 using StudyHub.Domain.Entities;
 using StudyHub.Infrastructure.Data;
@@ -37,5 +38,34 @@ public class ModuleService
         await _context.SaveChangesAsync();
 
         return module.Id;
+    }
+    public async Task UpdateAsync(Guid id, CreateModuleDto dto)
+    {
+        var module = await _context.Modules.FindAsync(id);
+
+        if (module == null)
+            throw new Exception("Module not found");
+
+        module.Title = dto.Title;
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task DeleteAsync(Guid id)
+    {
+        var module = await _context.Modules.FindAsync(id);
+
+        if (module == null)
+            throw new Exception("Module not found");
+
+        _context.Modules.Remove(module);
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task<IEnumerable<Module>> GetByCourseAsync(Guid courseId)
+    {
+        return await _context.Modules
+            .Where(m => m.CourseId == courseId)
+            .OrderBy(m => m.Order)
+            .ToListAsync();
     }
 }

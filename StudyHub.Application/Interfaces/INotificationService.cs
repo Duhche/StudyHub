@@ -13,5 +13,7 @@ namespace StudyHub.Application.Interfaces
         Task UserEnrolled(Guid userId, Guid courseId);
 
         Task AssignmentCreated(Guid assignmentId, string title);
+
+
     }
 }
